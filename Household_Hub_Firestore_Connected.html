@@ -1,0 +1,1080 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Household Hub</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#6738d8">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Household Hub">
+<style>
+:root{
+  --bg:#f7f8fc;--card:#fff;--text:#171925;--muted:#73788b;--line:#e8eaf1;
+  --purple:#6738d8;--purple2:#8b5cf6;--blue:#2b7de9;--green:#1fb765;
+  --red:#ef4444;--orange:#f59e0b;--shadow:0 18px 50px rgba(36,28,80,.09);
+}
+[data-theme="dark"]{
+  --bg:#14151f;--card:#1c1e2b;--text:#f2f2f7;--muted:#8b8fa3;--line:#2c2f42;
+  --shadow:0 18px 50px rgba(0,0,0,.4);
+}
+[data-theme="dark"] body{background:linear-gradient(135deg,#14151f,#171a26)}
+[data-theme="dark"] .phone{border-color:#2c2f42}
+[data-theme="dark"] .field input,[data-theme="dark"] .field select{background:#22243350;border-color:#2c2f42;color:var(--text)}
+[data-theme="dark"] .icon-btn:hover{background:#262838}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(135deg,#f5f2ff,#f7fbff);color:var(--text)}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.app-shell{width:min(1120px,96vw);margin:24px auto}
+.phone{width:min(520px,100%);margin:auto;background:var(--card);border:1px solid #e2e4ed;border-radius:30px;box-shadow:var(--shadow);overflow:hidden;min-height:850px;display:flex;flex-direction:column}
+.topbar{height:72px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex:none}
+.brand{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:850}
+.icon-btn{border:0;background:transparent;width:42px;height:42px;border-radius:12px;font-size:23px}
+.icon-btn:hover{background:#f3f3f8}
+.content{padding:18px;overflow:auto;flex:1}
+.center{display:grid;place-items:center;min-height:calc(850px - 72px);padding:26px}
+.auth-wrap{width:min(430px,100%)}
+.logo{width:70px;height:70px;border-radius:22px;background:linear-gradient(135deg,#6c3bdd,#9470f6);display:grid;place-items:center;color:white;font-size:34px;box-shadow:0 14px 30px rgba(103,56,216,.25);margin:0 auto 18px}
+.auth-title{text-align:center;font-size:30px;margin:0}.auth-sub{text-align:center;color:var(--muted);line-height:1.55;margin:9px 0 26px}
+.form-card{border:1px solid var(--line);border-radius:22px;padding:18px;background:#fff}
+.field{margin:0 0 15px}.field:last-child{margin-bottom:0}.field label{display:block;font-size:13px;font-weight:750;margin-bottom:7px}.field input,.field select{width:100%;height:48px;border:1px solid #dfe2eb;border-radius:13px;padding:0 14px;outline:none;background:#fff}.field input:focus,.field select:focus{border-color:var(--purple2);box-shadow:0 0 0 3px #8b5cf622}
+.primary{width:100%;border:0;border-radius:14px;background:linear-gradient(135deg,var(--purple),var(--purple2));color:#fff;font-weight:800;padding:14px 16px;box-shadow:0 9px 20px #6738d82a}.secondary{width:100%;border:1px solid var(--line);border-radius:14px;background:#fff;color:var(--text);font-weight:750;padding:13px 16px;margin-top:10px}
+.tiny{font-size:11px;color:var(--muted);line-height:1.5;text-align:center;margin-top:13px}
+.error{color:var(--red);font-size:12px;margin-top:7px;display:none}
+.verify{display:none;text-align:center}.verify .spinner{width:56px;height:56px;border:5px solid #ece9fb;border-top-color:var(--purple);border-radius:50%;animation:spin .9s linear infinite;margin:0 auto 18px}@keyframes spin{to{transform:rotate(360deg)}}
+.checkmark{width:66px;height:66px;border-radius:50%;background:#e9faef;color:var(--green);display:grid;place-items:center;font-size:34px;margin:0 auto 18px;font-weight:900}
+.setup-chip{display:inline-flex;gap:6px;align-items:center;background:#f1edff;color:#6235c8;border-radius:99px;padding:6px 10px;font-size:12px;font-weight:750;margin-bottom:12px}
+
+.hero{border-radius:20px;background:linear-gradient(135deg,#f0edff,#eef7ff);padding:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px}.hero h1{margin:0 0 6px;font-size:23px}.hero p{margin:0;color:var(--muted);font-size:13px}.hero-art{font-size:54px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.stat{border:1px solid var(--line);border-radius:16px;padding:13px 10px;background:#fff}.stat-icon{font-size:19px}.stat small{display:block;color:var(--muted);font-size:10px;margin-top:7px}.stat strong{display:block;font-size:18px;margin-top:3px}
+.card{border:1px solid var(--line);border-radius:18px;background:#fff;padding:15px;margin-top:13px}.cardhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.cardhead h3{font-size:14px;margin:0}.link{font-size:12px;color:var(--blue);font-weight:700;border:0;background:transparent;padding:0}
+.progress-row{display:flex;justify-content:space-between;color:var(--muted);font-size:12px}.bar{height:9px;border-radius:99px;background:#e9ebf0;margin-top:9px;overflow:hidden}.bar span{height:100%;display:block;border-radius:99px;background:var(--green)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.list{display:grid;gap:10px}.item{display:flex;gap:9px;align-items:flex-start;font-size:12px}.check{width:18px;height:18px;border-radius:50%;border:2px solid #b9bdca;flex:none}.done .check{background:var(--green);border-color:var(--green);position:relative}.done .check:after{content:"✓";color:#fff;position:absolute;font-size:11px;left:3px;top:-1px}.sub{display:block;color:var(--muted);font-size:10px;margin-top:2px}.overdue{color:var(--red)}.overdue .check{border-color:var(--red)}
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.quick button{border:0;color:#fff;border-radius:14px;padding:15px 5px;font-weight:800;min-height:72px}.q1{background:#6738d8}.q2{background:#2b7de9}.q3{background:#1fb765}.q4{background:#ef9415}
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.summarybox{border-radius:14px;background:#fafaff;padding:11px}.summarybox span{display:block;font-size:10px;color:var(--muted)}.summarybox b{display:block;font-size:16px;margin-top:4px}
+.home-nav{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;border:1px solid var(--line);background:#fff;border-radius:17px;padding:7px;margin-bottom:14px}.home-nav-btn{border:0;background:transparent;border-radius:12px;padding:9px 4px;color:#777b8c;font-size:11px;font-weight:750;display:flex;flex-direction:column;align-items:center;gap:4px}.home-nav-btn .nav-icon{font-size:22px;width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:#f4f3f9;transition:background .15s,transform .15s}.home-nav-btn span{display:block}.home-nav-btn.active{color:var(--purple)}.home-nav-btn.active .nav-icon{background:linear-gradient(135deg,var(--purple),var(--purple2));transform:scale(1.06)}
+.bottom{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);padding:9px 6px;flex:none;position:sticky;bottom:0;z-index:20;background:rgba(255,255,255,.97);backdrop-filter:blur(12px)}.bottom button{border:0;background:transparent;color:#777b8c;font-size:11px;font-weight:700;padding:6px 2px;display:flex;flex-direction:column;align-items:center;gap:4px}.bottom button .nav-icon{font-size:21px;width:36px;height:36px;display:grid;place-items:center;border-radius:11px;background:#f4f3f9;transition:background .15s,transform .15s}.bottom button.active{color:var(--purple)}.bottom button.active .nav-icon{background:linear-gradient(135deg,var(--purple),var(--purple2));transform:scale(1.06)}
+.section-title{font-size:13px;font-weight:850;margin:18px 0 10px}.page-title{font-size:23px;margin:0 0 4px}.page-sub{color:var(--muted);font-size:12px;margin:0 0 15px}
+.tool-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tool{border:1px solid var(--line);border-radius:17px;background:#fff;padding:15px;text-align:left}.tool .big{font-size:24px}.tool b{display:block;margin-top:8px}.tool span{display:block;color:var(--muted);font-size:11px;margin-top:4px}
+.role-choice{display:flex;flex-direction:column;gap:10px}.role-btn{border:2px solid var(--line);border-radius:16px;background:#fff;padding:14px;text-align:left;font-size:15px;font-weight:750;display:flex;flex-direction:column;gap:4px}.role-btn span{display:block;color:var(--muted);font-size:11.5px;font-weight:500}.role-btn.selected{border-color:var(--purple2);background:#fbf9ff}
+.work-item,.bill-item{border:1px solid var(--line);border-radius:16px;padding:13px;margin-top:9px;background:#fff}.row{display:flex;justify-content:space-between;align-items:center;gap:10px}.muted{color:var(--muted);font-size:11px}.tag{font-size:10px;border-radius:99px;padding:4px 8px;font-weight:800;background:#f0edff;color:#6434cb}.tag.red{background:#fff0f0;color:var(--red)}.tag.green{background:#eafaf0;color:#168a4b}
+.modal-backdrop{position:fixed;inset:0;background:rgba(19,20,30,.38);display:grid;place-items:center;padding:18px;z-index:50}.modal{width:min(500px,100%);max-height:88vh;overflow:auto;background:#fff;border-radius:24px;box-shadow:0 25px 80px #0003;padding:18px}.modal-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.close{border:0;background:#f1f2f6;border-radius:11px;width:38px;height:38px;font-size:23px}.group-card{border:1px solid var(--line);border-radius:17px;padding:14px;margin-top:10px;display:flex;align-items:center;gap:11px;background:#fff}.group-card.current{border:2px solid var(--purple2);background:#fbf9ff}.group-icon{width:46px;height:46px;border-radius:14px;background:#eee8ff;display:grid;place-items:center;font-size:22px}.grow{flex:1}.grow b{display:block}.grow span{display:block;color:var(--muted);font-size:11px;margin-top:3px}.rank{text-align:right}.rank small{display:block;color:var(--muted);font-size:10px}.rank b{font-size:16px}.member{display:grid;grid-template-columns:30px 1fr 70px 70px;gap:7px;align-items:center;padding:11px 5px;border-bottom:1px solid var(--line);font-size:12px}.member:last-child{border-bottom:0}.member.you{background:#f8f4ff;border-radius:10px}.avatar{width:28px;height:28px;border-radius:50%;background:#ececf4;display:grid;place-items:center;font-size:12px}.lock-note{text-align:center;color:var(--muted);font-size:11px;padding:13px 0 2px}.empty{border:1px dashed #d7d9e4;border-radius:16px;padding:20px;text-align:center;color:var(--muted);font-size:12px}
+.history-item{display:flex;align-items:center;gap:12px;padding:12px 5px;border-bottom:1px solid var(--line)}.history-item:last-child{border-bottom:0}.history-body{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}.history-body b{font-size:13px}.history-body span{font-size:11px}.xp-pos{color:var(--green)}.xp-zero{color:var(--muted)}
+.drawer-backdrop{position:fixed;inset:0;background:rgba(15,16,26,.42);z-index:60;display:flex}.drawer{width:min(300px,82%);height:100%;background:var(--card);box-shadow:0 0 40px rgba(0,0,0,.25);overflow:auto;animation:slideIn .22s ease-out;display:flex;flex-direction:column}
+@keyframes slideIn{from{transform:translateX(-100%)}to{transform:translateX(0)}}
+.drawer-profile{display:flex;align-items:center;gap:13px;padding:24px 18px 16px}.drawer-avatar{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--purple2));display:grid;place-items:center;font-size:24px;color:#fff;flex:none}.drawer-profile h3{margin:0;font-size:17px}.drawer-profile span{color:var(--muted);font-size:12px}
+.drawer-divider{height:1px;background:var(--line);margin:6px 0}
+.profile-avatar-wrap{position:relative;width:96px;height:96px;margin:4px auto 12px}
+.profile-avatar{width:100%;height:100%;border-radius:50%;overflow:hidden;background:linear-gradient(135deg,var(--purple),var(--purple2));display:grid;place-items:center;font-size:42px;color:#fff}
+.profile-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.profile-avatar-edit{position:absolute;right:-3px;bottom:-3px;width:32px;height:32px;border-radius:50%;background:var(--purple2);color:#fff;border:3px solid var(--card);display:grid;place-items:center;font-size:14px;box-shadow:0 4px 10px rgba(0,0,0,.18);cursor:pointer}
+.drawer-item{display:flex;align-items:center;gap:14px;padding:13px 18px;border:0;background:transparent;width:100%;text-align:left;font-size:14px;color:var(--text);font-weight:600}.drawer-item .drawer-icon{font-size:18px;width:24px;text-align:center}.drawer-item:active{background:var(--bg)}
+.drawer-toggle-row{display:flex;align-items:center;justify-content:space-between;padding:13px 18px}.drawer-toggle-row .left{display:flex;align-items:center;gap:14px;font-size:14px;font-weight:600}.drawer-toggle-row .drawer-icon{font-size:18px;width:24px;text-align:center}
+.switch{position:relative;width:44px;height:25px;background:#dcdee6;border-radius:999px;border:0;flex:none}.switch.on{background:var(--purple)}.switch::after{content:"";position:absolute;top:2px;left:2px;width:21px;height:21px;background:#fff;border-radius:50%;transition:transform .15s}.switch.on::after{transform:translateX(19px)}
+
+.modal-backdrop{position:fixed;inset:0;background:rgba(19,20,30,.38);display:grid;place-items:center;padding:18px;z-index:50}
+.modal{width:min(500px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:24px;box-shadow:0 25px 80px #0003;padding:20px}
+.modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.close{border:0;background:#f1f2f6;border-radius:11px;width:38px;height:38px;font-size:23px}
+.deadline-lock{margin-top:5px;color:var(--muted);font-size:11px;line-height:1.45}
+.xp-preview{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #e8e0ff;background:#faf8ff;border-radius:14px;padding:12px;margin:14px 0}
+.xp-preview b{color:var(--purple)}
+
+.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,20px);opacity:0;background:#171925;color:#fff;padding:11px 16px;border-radius:12px;transition:.2s;z-index:100;font-size:13px;pointer-events:none}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:560px){.app-shell{width:100%;margin:0}.phone{border-radius:0;border-left:0;border-right:0;min-height:100vh}.stats{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}.quick{grid-template-columns:repeat(2,1fr)}.summary{grid-template-columns:1fr}.hero-art{font-size:42px}}
+</style>
+</head>
+<body>
+<div class="app-shell"><div class="phone" id="app"></div></div>
+<div id="toast" class="toast"></div>
+
+<!-- Household Hub: Firebase connection - Step 1 -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+const firebaseConfig = {
+ apiKey: "AIzaSyD1JRzTQciZ2kLNWu65xNltDRYEeuFMqd0",
+ authDomain: "household-hub-7acd9.firebaseapp.com",
+ projectId: "household-hub-7acd9",
+ storageBucket: "household-hub-7acd9.firebasestorage.app",
+ messagingSenderId: "849661773929",
+ appId: "1:849661773929:web:65bd6018df172990e3faf8"
+};
+const firebaseApp = initializeApp(firebaseConfig);
+const firestore = getFirestore(firebaseApp);
+const auth = getAuth(firebaseApp);
+window.householdHubFirebase = {app: firebaseApp, db: firestore, auth, doc, getDoc, setDoc};
+window.householdHubAuthReady = signInAnonymously(auth).then(()=>auth.currentUser);
+window.householdHubAuthReady.catch(err=>console.error("Firebase anonymous sign-in failed:",err));
+</script>
+
+<script>
+"use strict";
+
+/*
+  Household Hub — New User Prototype
+  - Starts with zero demo household data.
+  - Onboarding: name, group name, group code, optional role.
+  - Verification is a local prototype simulation, not real authentication.
+  - Other Groups are view-only; no group switching.
+*/
+
+const KEY="household_hub_new_prototype_v3_onboarding_fixed";
+
+const state={
+  onboarding:{name:"",groupName:"",groupCode:"",role:"Member"},
+  household:null,
+  works:[],
+  bills:[],
+  activity:[],
+  darkMode:false,
+  currentScreen:"home"
+};
+
+function load(){
+  try{
+    const saved=localStorage.getItem(KEY);
+    if(saved) Object.assign(state,JSON.parse(saved));
+  }catch(e){}
+}
+function save(){
+  try{ localStorage.setItem(KEY,JSON.stringify(state)); }
+  catch(e){ console.warn("Could not persist state (storage unavailable):",e); }
+  // Sync the real household state to Firestore. Local storage remains a fast cache.
+  if(state.household?.groupCode) syncHouseholdToFirestore();
+}
+
+async function ensureFirebaseAuth(){
+  if(window.householdHubAuthReady) return await window.householdHubAuthReady;
+  throw new Error("Firebase authentication is not ready");
+}
+function firestoreRef(groupCode){
+  const fb=window.householdHubFirebase;
+  if(!fb?.db) throw new Error("Firestore is not initialized");
+  return fb.doc(fb.db,"households",String(groupCode).toUpperCase());
+}
+function backendPayload(){
+  const h=state.household;
+  return {
+    groupName:h.groupName,
+    groupCode:h.groupCode,
+    createdAt:h.createdAt || new Date().toISOString(),
+    ownerUid:h.ownerUid || null,
+    memberIds:(h.members||[]).map(m=>m.uid||m.id).filter(Boolean),
+    members:h.members||[],
+    works:state.works||[],
+    bills:state.bills||[],
+    activity:state.activity||[],
+    updatedAt:new Date().toISOString()
+  };
+}
+let syncTimer=null;
+async function syncHouseholdToFirestore(){
+  if(!state.household?.groupCode) return;
+  clearTimeout(syncTimer);
+  syncTimer=setTimeout(async()=>{
+    try{
+      await ensureFirebaseAuth();
+      await window.householdHubFirebase.setDoc(firestoreRef(state.household.groupCode),backendPayload(),{merge:false});
+    }catch(err){
+      console.warn("Firestore sync failed:",err);
+    }
+  },80);
+}
+async function loadHouseholdFromFirestore(groupCode){
+  await ensureFirebaseAuth();
+  const snap=await window.householdHubFirebase.getDoc(firestoreRef(groupCode));
+  if(!snap.exists()) return null;
+  return snap.data();
+}
+function applyRemoteHousehold(data,uid){
+  const currentMember=(data.members||[]).find(m=>(m.uid||m.id)===uid);
+  if(currentMember?.role) state.onboarding.role=currentMember.role;
+  state.household={
+    groupName:data.groupName,
+    groupCode:data.groupCode,
+    createdAt:data.createdAt,
+    ownerUid:data.ownerUid||null,
+    members:(data.members||[]).map(m=>({...m,you:(m.uid||m.id)===uid}))
+  };
+  state.works=Array.isArray(data.works)?data.works:[];
+  state.bills=Array.isArray(data.bills)?data.bills:[];
+  state.activity=Array.isArray(data.activity)?data.activity:[];
+  saveLocalOnly();
+}
+function saveLocalOnly(){
+  try{ localStorage.setItem(KEY,JSON.stringify(state)); }catch(e){}
+}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function toast(msg){
+  const t=document.getElementById("toast"); t.textContent=msg;t.classList.add("show");
+  clearTimeout(window.__toast);window.__toast=setTimeout(()=>t.classList.remove("show"),1800);
+}
+function resetApp(){
+  localStorage.removeItem(KEY);
+  location.reload();
+}
+function me(){
+  return state.household?.members?.find(x=>x.you) || null;
+}
+function handleAvatarUpload(event){
+  const file=event.target.files && event.target.files[0];
+  event.target.value="";
+  if(!file) return;
+  const looksLikeImage=file.type.startsWith("image/") || (!file.type && /\.(jpe?g|png|gif|webp|heic|heif|bmp)$/i.test(file.name||""));
+  if(!looksLikeImage){toast("Please choose an image file");return;}
+  const reader=new FileReader();
+  reader.onload=(e)=>{
+    const img=new Image();
+    img.onload=()=>{
+      const maxSize=320;
+      let w=img.width,h=img.height;
+      if(w>h){ if(w>maxSize){h=Math.round(h*maxSize/w);w=maxSize;} }
+      else { if(h>maxSize){w=Math.round(w*maxSize/h);h=maxSize;} }
+      const canvas=document.createElement("canvas");
+      canvas.width=w;canvas.height=h;
+      canvas.getContext("2d").drawImage(img,0,0,w,h);
+      const dataUrl=canvas.toDataURL("image/jpeg",0.85);
+      const mem=me();
+      if(mem){
+        mem.avatar=dataUrl;
+        renderProfile();
+        toast("Profile photo updated");
+        save();
+      }
+    };
+    img.onerror=()=>toast("Couldn't read that image");
+    img.src=e.target.result;
+  };
+  reader.onerror=()=>toast("Couldn't read that image");
+  reader.readAsDataURL(file);
+}
+function removeAvatar(){
+  const mem=me();
+  if(mem){ delete mem.avatar; renderProfile(); toast("Profile photo removed"); save(); }
+}
+function todayKey(){return new Date().toISOString().slice(0,10);}
+function startOfWeek(){
+  const d=new Date();const day=d.getDay()||7;d.setDate(d.getDate()-day+1);d.setHours(0,0,0,0);return d;
+}
+function isToday(iso){return iso && iso.slice(0,10)===todayKey();}
+function weekXp(){
+  const start=startOfWeek();
+  return state.activity.filter(a=>a.type==="xp"&&new Date(a.time)>=start).reduce((s,a)=>s+Number(a.amount||0),0);
+}
+function totalXp(){
+  return state.activity.filter(a=>a.type==="xp").reduce((s,a)=>s+Number(a.amount||0),0);
+}
+function groupTotal(){
+  const members=state.household?.members||[];
+  return members.reduce((s,m)=>s+Number(m.xp||0),0);
+}
+function memberRank(){
+  const arr=[...(state.household?.members||[])].sort((a,b)=>(b.xp||0)-(a.xp||0));
+  const id=me()?.id; return Math.max(1,arr.findIndex(x=>x.id===id)+1);
+}
+function groupRank(){ return {rank:1,total:1}; }
+/* ---------- onboarding: Welcome -> Information -> Create/Join -> Group Code -> Verification ---------- */
+function renderOnboarding(){
+  document.getElementById("app").innerHTML=`
+  <div class="content center">
+    <div class="auth-wrap" style="text-align:center">
+      <div class="logo">🏠</div>
+      <h1 class="auth-title">Household Hub</h1>
+      <p class="auth-sub">Organize your household.<br>Work together. Earn XP.</p>
+      <button class="primary" style="width:100%" onclick="renderInformation()">Get Started</button>
+    </div>
+  </div>`;
+}
+
+function renderInformation(){
+  const o=state.onboarding;
+  document.getElementById("app").innerHTML=`
+  <div class="content">
+    <button class="link" onclick="renderOnboarding()">← Back</button>
+    <div class="auth-wrap">
+      <h1 class="auth-title" style="font-size:25px">Your Information</h1>
+      <p class="auth-sub">Tell us who you are and how you'll participate.</p>
+      <div class="form-card">
+        <div class="field">
+          <label>Name</label>
+          <input id="infoName" placeholder="Your name" value="${esc(o.name)}">
+        </div>
+        <div class="field">
+          <label>Choose your role</label>
+          <div class="role-choice">
+            <button type="button" class="role-btn ${o.role==="Admin"?"selected":""}" id="roleAdminBtn" onclick="selectRole('Admin')">
+              👑 Admin
+              <span>Assign Work to members, set & change deadlines</span>
+            </button>
+            <button type="button" class="role-btn ${o.role==="Member"?"selected":""}" id="roleMemberBtn" onclick="selectRole('Member')">
+              👤 Member
+              <span>Create your own Work, set your deadline, earn XP</span>
+            </button>
+          </div>
+        </div>
+        <button class="primary" style="width:100%;margin-top:6px" onclick="saveInformation()">Continue</button>
+      </div>
+    </div>
+  </div>`;
+}
+function selectRole(role){
+  state.onboarding.role=role;
+  document.getElementById("roleAdminBtn")?.classList.toggle("selected",role==="Admin");
+  document.getElementById("roleMemberBtn")?.classList.toggle("selected",role==="Member");
+}
+function saveInformation(){
+  const name=document.getElementById("infoName")?.value.trim();
+  if(!name){toast("Please enter your name");return;}
+  state.onboarding.name=name;
+  save();
+  renderGroupChoice();
+}
+
+function renderGroupChoice(){
+  document.getElementById("app").innerHTML=`
+  <div class="content">
+    <button class="link" onclick="renderInformation()">← Back</button>
+    <div class="auth-wrap">
+      <h1 class="auth-title" style="font-size:25px">Create or Join a Group</h1>
+      <p class="auth-sub">Start a new household group, or join one with a code someone shared with you.</p>
+      <div class="form-card" style="display:flex;flex-direction:column;gap:12px">
+        <button class="tool" style="text-align:left" onclick="renderCreateGroup()">
+          <div class="big">➕</div><b>Create Group</b><span>Start a new household and get a Group Code</span>
+        </button>
+        <button class="tool" style="text-align:left" onclick="renderJoinGroup()">
+          <div class="big">🔑</div><b>Join Group</b><span>Enter a Group Code you were given</span>
+        </button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderCreateGroup(){
+  document.getElementById("app").innerHTML=`
+  <div class="content">
+    <button class="link" onclick="renderGroupChoice()">← Back</button>
+    <div class="auth-wrap">
+      <h1 class="auth-title" style="font-size:25px">Create Group</h1>
+      <p class="auth-sub">Give your household a name.</p>
+      <div class="form-card">
+        <div class="field">
+          <label>Group name</label>
+          <input id="groupNameInput" placeholder="e.g. Kumar Family">
+        </div>
+        <button class="primary" style="width:100%" onclick="submitCreateGroup()">Create Group</button>
+      </div>
+    </div>
+  </div>`;
+}
+function generateGroupCode(){
+  const chars="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let code="";
+  for(let i=0;i<6;i++) code+=chars[Math.floor(Math.random()*chars.length)];
+  return code;
+}
+function submitCreateGroup(){
+  const name=document.getElementById("groupNameInput")?.value.trim();
+  if(!name){toast("Please enter a group name");return;}
+  state.onboarding.groupName=name;
+  state.onboarding.groupCode=generateGroupCode();
+  state.onboarding.mode="create";
+  save();
+  renderGroupCodeScreen();
+}
+
+function renderJoinGroup(){
+  document.getElementById("app").innerHTML=`
+  <div class="content">
+    <button class="link" onclick="renderGroupChoice()">← Back</button>
+    <div class="auth-wrap">
+      <h1 class="auth-title" style="font-size:25px">Join Group</h1>
+      <p class="auth-sub">Enter the Group Code shared with you.</p>
+      <div class="form-card">
+        <div class="field">
+          <label>Group Code</label>
+          <input id="joinCodeInput" placeholder="e.g. K7M4Q2" style="text-transform:uppercase">
+        </div>
+        <button class="primary" style="width:100%" onclick="submitJoinGroup()">Join Group</button>
+      </div>
+      <p class="auth-sub" style="margin-top:14px;font-size:11.5px">Note: this prototype cannot verify a code against a real backend yet — that check happens once the group service is built.</p>
+    </div>
+  </div>`;
+}
+function submitJoinGroup(){
+  const code=document.getElementById("joinCodeInput")?.value.trim().toUpperCase();
+  if(!code){toast("Please enter a group code");return;}
+  state.onboarding.groupCode=code;
+  state.onboarding.groupName="";
+  state.onboarding.mode="join";
+  save();
+  renderVerification();
+}
+
+function renderGroupCodeScreen(){
+  const o=state.onboarding;
+  document.getElementById("app").innerHTML=`
+  <div class="content center">
+    <div class="auth-wrap" style="text-align:center">
+      <h1 class="auth-title" style="font-size:25px">Your Group Code</h1>
+      <p class="auth-sub">Share this code with people who want to join ${esc(o.groupName)}.</p>
+      <div class="form-card">
+        <div class="muted">GROUP NAME</div>
+        <h2 style="margin:4px 0 16px">${esc(o.groupName)}</h2>
+        <div class="muted">GROUP CODE</div>
+        <h1 style="letter-spacing:4px;margin:4px 0 20px">${esc(o.groupCode)}</h1>
+        <button class="primary" style="width:100%" onclick="renderVerification()">Continue</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+async function renderVerification(){
+  document.getElementById("app").innerHTML=`
+  <div class="content center">
+    <div class="auth-wrap verify" style="display:block">
+      <div class="spinner"></div>
+      <h1 class="auth-title" style="font-size:25px">Connecting your household…</h1>
+      <p class="auth-sub">Checking Firebase and preparing your shared household dashboard.</p>
+    </div>
+  </div>`;
+  try{
+    const o=state.onboarding;
+    const user=await ensureFirebaseAuth();
+    const code=String(o.groupCode||"").toUpperCase();
+    if(!code){throw new Error("Missing group code");}
+    const existing=await loadHouseholdFromFirestore(code);
+
+    if(o.mode==="create"){
+      if(existing){
+        toast("That group code already exists. Please create again.");
+        renderCreateGroup();
+        return;
+      }
+      const member={uid:user.uid,id:user.uid,name:o.name,you:true,xp:0,streak:0,completed:0,role:"Admin"};
+      state.onboarding.role="Admin";
+      state.household={groupName:o.groupName,groupCode:code,createdAt:new Date().toISOString(),ownerUid:user.uid,members:[member]};
+      state.works=[];state.bills=[];state.activity=[];
+      state.currentScreen="home";
+      saveLocalOnly();
+      await window.householdHubFirebase.setDoc(firestoreRef(code),backendPayload());
+    }else{
+      if(!existing){
+        toast("Group not found. Check the Group Code.");
+        renderJoinGroup();
+        return;
+      }
+      const members=Array.isArray(existing.members)?existing.members:[];
+      const already=members.some(m=>(m.uid||m.id)===user.uid);
+      if(!already){
+        members.push({uid:user.uid,id:user.uid,name:o.name,you:true,xp:0,streak:0,completed:0,role:o.role||"Member"});
+      }
+      const merged={...existing,members,memberIds:members.map(m=>m.uid||m.id)};
+      await window.householdHubFirebase.setDoc(firestoreRef(code),merged);
+      applyRemoteHousehold(merged,user.uid);
+    }
+    state.onboarding.groupName=state.household.groupName;
+    state.onboarding.groupCode=state.household.groupCode;
+    state.currentScreen="home";
+    saveLocalOnly();
+    renderHome();
+  }catch(err){
+    console.error(err);
+    toast("Firebase connection failed. Please try again.");
+    renderGroupChoice();
+  }
+}
+
+/* ---------- shared navigation ---------- */
+function topbar(title,back){
+  return `<header class="topbar"><button class="icon-btn" onclick="${back||"openMenu()"}">${back?"←":"☰"}</button><div class="brand">${esc(title)}</div><button class="icon-btn" onclick="toast('Notifications will appear here')">🔔</button></header>`;
+}
+function openMenu(){
+  const existing=document.getElementById("menuDrawer");
+  if(existing) existing.remove();
+  const m=me();
+  document.body.insertAdjacentHTML("beforeend",`
+    <div class="drawer-backdrop" id="menuDrawer" onclick="if(event.target===this)closeMenu()">
+      <div class="drawer">
+        <button class="drawer-item" style="padding:24px 18px 16px" onclick="closeMenu();renderProfile()">
+          <span class="drawer-profile" style="padding:0">
+            <span class="drawer-avatar"${m?.avatar?` style="background-image:url('${m.avatar}');background-size:cover;background-position:center"`:""}>${m?.avatar?"":"🙂"}</span>
+            <span>
+              <h3>Hi, ${esc(m?.name||"there")}</h3>
+              <span>View profile</span>
+            </span>
+          </span>
+        </button>
+        <div class="drawer-divider"></div>
+        <button class="drawer-item" onclick="closeMenu();renderMyGroup()"><span class="drawer-icon">👥</span>My Group</button>
+        <button class="drawer-item" onclick="closeMenu();renderHistory()"><span class="drawer-icon">📜</span>History</button>
+        <button class="drawer-item" onclick="closeMenu();renderGlobalLeaderboard()"><span class="drawer-icon">🌍</span>Global Leaderboard</button>
+        ${!isStandalone()?`<button class="drawer-item" onclick="closeMenu();installApp()"><span class="drawer-icon">📲</span>Install App</button>`:""}
+        <div class="drawer-divider"></div>
+        <div class="drawer-toggle-row">
+          <span class="left"><span class="drawer-icon">🌙</span>Dark Mode</span>
+          <button class="switch ${state.darkMode?"on":""}" id="darkModeSwitch" onclick="toggleDarkMode()"></button>
+        </div>
+      </div>
+    </div>
+  `);
+}
+function closeMenu(){document.getElementById("menuDrawer")?.remove();}
+function applyTheme(){
+  document.documentElement.setAttribute("data-theme",state.darkMode?"dark":"light");
+}
+function toggleDarkMode(){
+  state.darkMode=!state.darkMode;
+  save();
+  applyTheme();
+  document.getElementById("darkModeSwitch")?.classList.toggle("on",state.darkMode);
+}
+function renderHome(){
+  state.currentScreen="home";save();
+  const m=me(), gr=groupRank();
+  const allWorks=state.works;
+  const pending=allWorks.filter(w=>!w.done);
+  const doneToday=allWorks.filter(w=>w.done&&isToday(w.completedAt)).length;
+  const totalToday=doneToday+pending.length;
+  const pct=totalToday?Math.round(doneToday/totalToday*100):0;
+  const completedToday=allWorks.filter(w=>w.done&&isToday(w.completedAt)).slice(0,4);
+  const focus=pending.filter(w=>!workOverdue(w)).slice(0,3);
+  const overdue=pending.filter(w=>workOverdue(w)).slice(0,3);
+
+  document.getElementById("app").innerHTML=`
+    ${topbar("🏠 Household Hub")}
+    <main class="content">
+      <div class="home-nav">
+        <button class="home-nav-btn active" onclick="renderHome()"><span class="nav-icon">🏠</span><span>Home</span></button>
+        <button class="home-nav-btn" onclick="renderWork()"><span class="nav-icon">🧹</span><span>Work</span></button>
+        <button class="home-nav-btn" onclick="renderBills()"><span class="nav-icon">💳</span><span>Bills</span></button>
+        <button class="home-nav-btn" onclick="renderProgress()"><span class="nav-icon">📊</span><span>Progress</span></button>
+      </div>
+      <div class="hero">
+        <div>
+          <h1>Welcome, ${esc(m.name)}! 👋</h1>
+          <p>${esc(state.household.groupName)} · Your household dashboard</p>
+        </div>
+        <div class="hero-art">🏡</div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="stat-icon">✅</div><small>Completed Today</small><strong>${doneToday} / ${totalToday}</strong></div>
+        <div class="stat"><div class="stat-icon">⭐</div><small>XP This Week</small><strong>${weekXp()}</strong></div>
+        <div class="stat"><div class="stat-icon">🏆</div><small>Your Rank</small><strong>#${memberRank()}</strong></div>
+        <div class="stat"><div class="stat-icon">👥</div><small>Group Rank</small><strong>#${gr.rank}</strong></div>
+      </div>
+
+      <div class="card">
+        <div class="cardhead"><h3>Today's Progress</h3><b>${pct}%</b></div>
+        <div class="progress-row"><span>${doneToday} of ${totalToday} tasks completed</span><span>${pending.length} left</span></div>
+        <div class="bar"><span style="width:${pct}%"></span></div>
+      </div>
+
+      <div class="two">
+        <div class="card">
+          <div class="cardhead"><h3>✅ Completed Today</h3></div>
+          <div class="list">
+            ${completedToday.length
+              ? completedToday.map(w=>`<div class="item done"><i class="check"></i><div><b>${esc(w.title)}</b><span class="sub">${new Date(w.completedAt).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})}</span></div></div>`).join("")
+              : `<div class="empty">Nothing completed today yet.</div>`}
+          </div>
+        </div>
+
+        <div>
+          <div class="card">
+            <div class="cardhead"><h3>📝 Work To Focus On</h3></div>
+            <div class="list">
+              ${focus.length
+                ? focus.map(w=>`<div class="item"><i class="check"></i><div><b>${esc(w.title)}</b><span class="sub">🔒 Due ${esc(formatDeadline(w))}</span></div></div>`).join("")
+                : `<div class="empty">No pending work.</div>`}
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="cardhead"><h3 class="overdue">⚠️ Overdue / Incomplete</h3></div>
+            <div class="list">
+              ${overdue.length
+                ? overdue.map(w=>`<div class="item overdue"><i class="check"></i><div><b>${esc(w.title)}</b><span class="sub overdue">INCOMPLETE · 0 XP · Deadline missed</span></div></div>`).join("")
+                : `<div class="empty">No overdue work 🎉</div>`}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="cardhead"><h3>This Week</h3></div>
+        <div class="summary">
+          <div class="summarybox">📋<span>Tasks Completed</span><b>${allWorks.filter(w=>w.done).length}</b></div>
+          <div class="summarybox">⭐<span>XP Earned</span><b>${weekXp()}</b></div>
+          <div class="summarybox">🔥<span>Streak</span><b>${m.streak||0} days</b></div>
+        </div>
+      </div>
+
+      <button class="tool" style="width:100%;margin-top:13px;text-align:left" onclick="renderMyGroup()">
+        <div class="big">👥</div>
+        <b>My Group</b>
+        <span>View your household's members, XP and ranks</span>
+      </button>
+    </main>
+    <!-- Home navigation is at the top of the dashboard. -->`;
+}
+
+function bottomNav(active){
+  return `<nav class="bottom">
+    <button class="${active==="home"?"active":""}" onclick="renderHome()"><span class="nav-icon">🏠</span>Home</button>
+    <button class="${active==="work"?"active":""}" onclick="renderWork()"><span class="nav-icon">🧹</span>Work</button>
+    <button class="${active==="bill"?"active":""}" onclick="renderBills()"><span class="nav-icon">💳</span>Bills</button>
+    <button class="${active==="progress"?"active":""}" onclick="renderProgress()"><span class="nav-icon">📊</span>Progress</button>
+  </nav>`;
+}
+
+/* ---------- Work ---------- */
+
+function classifyWork(title){
+  const t=title.toLowerCase();
+  const big=['deep clean','whole house','entire house','full house','wash car','car wash','grocery shopping','buy groceries','repair','maintenance','move furniture','clean all rooms','garden cleaning','major cleaning'];
+  const medium=['clean kitchen','clean bathroom','bathroom','kitchen','mop','sweep','dishes','wash dishes','laundry','clothes','dust','clean room','water plants','take out trash','garbage','cook','cooking','meal','bedsheet','bed sheet','balcony','sink','stove','windows'];
+  if(big.some(k=>t.includes(k))) return 'Big';
+  if(medium.some(k=>t.includes(k))) return 'Medium';
+  return 'Small';
+}
+function xpForSize(size){return size==='Big'?20:size==='Medium'?10:5;}
+function workOverdue(w){return !w.done && Number.isFinite(Number(w.dueAt)) && Date.now()>Number(w.dueAt);}
+function formatDeadline(w){
+  return w.dueAt
+    ? new Date(Number(w.dueAt)).toLocaleString([], {dateStyle:'medium',timeStyle:'short'})
+    : 'No deadline';
+}
+function localDateTimeMin(){
+  const min=new Date(Date.now()+60000);
+  return new Date(min.getTime()-min.getTimezoneOffset()*60000).toISOString().slice(0,16);
+}
+function isAdmin(){return state.onboarding.role==="Admin";}
+function addWork(){
+  const existing=document.getElementById('addWorkModal');
+  if(existing) existing.remove();
+  const local=localDateTimeMin();
+  const admin=isAdmin();
+  const members=state.household?.members||[];
+  const assignField=admin
+    ? `<div class="field">
+        <label>Assigned to</label>
+        <select id="workAssignee">
+          ${members.map(m=>`<option value="${esc(m.name)}">${m.you?"Me":esc(m.name)}</option>`).join("")}
+        </select>
+       </div>`
+    : `<div class="field"><label>Assigned to</label><input value="Me" disabled></div>`;
+  const deadlineNote=admin
+    ? `As an Admin, you can change this deadline later.`
+    : `Set a deadline once. It cannot be changed after the work is added.`;
+  document.body.insertAdjacentHTML('beforeend',`
+    <div class="modal-backdrop" id="addWorkModal" onclick="if(event.target===this)closeAddWork()">
+      <div class="modal">
+        <div class="modal-head">
+          <div>
+            <h2 style="margin:0">🛠️ Add Work</h2>
+            <div class="deadline-lock">${deadlineNote}</div>
+          </div>
+          <button class="close" onclick="closeAddWork()">×</button>
+        </div>
+
+        <div class="field" style="margin-top:18px">
+          <label>Work name</label>
+          <input id="workTitle" placeholder="e.g. Clean the kitchen" oninput="previewWorkXP()">
+        </div>
+
+        ${assignField}
+
+        <div class="field">
+          <label>Deadline date & time ${admin?"":"🔒"}</label>
+          <input id="workDue" type="datetime-local" min="${local}">
+          <div class="deadline-lock">${admin?"The deadline must be in the future.":"The deadline must be in the future and will be locked after adding."}</div>
+        </div>
+
+        <div class="field">
+          <label>Repeat</label>
+          <select id="workRepeat">
+            <option value="">One time</option>
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly</option>
+          </select>
+        </div>
+
+        <div class="xp-preview">
+          <span>Automatic work size & XP</span>
+          <b id="workXpPreview">Small · 5 XP</b>
+        </div>
+
+        <button class="primary" onclick="saveNewWork()">Add Work</button>
+      </div>
+    </div>
+  `);
+}
+function previewWorkXP(){
+  const title=document.getElementById('workTitle')?.value.trim()||'';
+  const size=classifyWork(title);
+  const el=document.getElementById('workXpPreview');
+  if(el) el.textContent=`${size} · ${xpForSize(size)} XP`;
+}
+function closeAddWork(){document.getElementById('addWorkModal')?.remove();}
+function saveNewWork(){
+  const title=document.getElementById('workTitle')?.value.trim();
+  const due=document.getElementById('workDue')?.value;
+  const repeat=document.getElementById('workRepeat')?.value||'';
+  const admin=isAdmin();
+  const assignee=admin?(document.getElementById('workAssignee')?.value||me()?.name):(me()?.name||state.onboarding.name);
+  if(!title){toast('Please enter a work name');return;}
+  if(!due){toast('Please set a future deadline');return;}
+  const dueAt=new Date(due).getTime();
+  if(!Number.isFinite(dueAt)||dueAt<=Date.now()){toast('Please set a future deadline');return;}
+
+  const size=classifyWork(title);
+  state.works.unshift({
+    id:crypto.randomUUID?.()||String(Date.now()),
+    title,
+    createdBy:admin?"Admin":"Member",
+    assignee,
+    done:false,
+    size,
+    xp:xpForSize(size),
+    recurring:repeat,
+    lockedDeadline:!admin,
+    created:new Date().toISOString(),
+    dueAt
+  });
+  save();
+  closeAddWork();
+  toast(`Work added · ${size} · ${xpForSize(size)} XP`);
+  renderWork();
+}
+
+function editDeadline(i){
+  const w=state.works[i];
+  if(!w||!isAdmin()||w.lockedDeadline||w.done)return;
+  const local=localDateTimeMin();
+  document.body.insertAdjacentHTML('beforeend',`
+    <div class="modal-backdrop" id="editDeadlineModal" onclick="if(event.target===this)document.getElementById('editDeadlineModal').remove()">
+      <div class="modal">
+        <div class="modal-head">
+          <h2 style="margin:0">Change Deadline</h2>
+          <button class="close" onclick="document.getElementById('editDeadlineModal').remove()">×</button>
+        </div>
+        <div class="field" style="margin-top:18px">
+          <label>New deadline for "${esc(w.title)}"</label>
+          <input id="newDeadline" type="datetime-local" min="${local}">
+        </div>
+        <button class="primary" onclick="saveNewDeadline(${i})">Save Deadline</button>
+      </div>
+    </div>
+  `);
+}
+function saveNewDeadline(i){
+  const w=state.works[i];
+  const due=document.getElementById('newDeadline')?.value;
+  if(!due)return;
+  const dueAt=new Date(due).getTime();
+  if(!Number.isFinite(dueAt)||dueAt<=Date.now()){toast('Please set a future deadline');return;}
+  w.dueAt=dueAt;
+  save();
+  document.getElementById('editDeadlineModal')?.remove();
+  toast('Deadline updated');
+  renderWork();
+}
+
+function renderWork(){
+  const works=state.works;
+  const admin=isAdmin();
+  document.getElementById("app").innerHTML=`${topbar("Work","renderHome()")}
+  <main class="content">
+    <button class="link" onclick="renderHome()">← Back to Home</button>
+    <h1 class="page-title" style="margin-top:10px">Work</h1>
+    <p class="page-sub">${admin?"Assign Work, set deadlines, and change them if plans shift.":"Set a deadline once. Complete work on time to earn XP."}</p>
+    <button class="primary" onclick="addWork()">+ Add Work</button>
+
+    <div class="card" style="margin-top:13px">
+      <b style="font-size:13px">How deadlines work</b>
+      <p class="muted" style="margin:7px 0 0">
+        Small = 5 XP · Medium = 10 XP · Big = 20 XP.
+        If the deadline is missed, the work becomes <b>INCOMPLETE</b> and earns 0 XP even if finished later.
+        ${admin?"As Admin, you can change deadlines on work you create.":"Once you set your deadline, it's locked."}
+      </p>
+    </div>
+
+    <div class="section-title">Work</div>
+    ${works.length?works.map((w,i)=>{
+      const overdue=workOverdue(w);
+      const status=w.done
+        ? (w.late?'<span class="tag red">Completed Late · 0 XP</span>':`<span class="tag green">Completed · +${w.xp} XP</span>`)
+        : (overdue?'<span class="tag red">INCOMPLETE</span>':'<span class="tag">Open</span>');
+      const canComplete=!w.done && w.assignee===(me()?.name);
+      const canEditDeadline=admin && !w.lockedDeadline && !w.done;
+      return `<div class="work-item">
+        <div class="row">
+          <div>
+            <b>${esc(w.title)}</b>
+            <div class="muted">${esc(w.size)} work · ${w.xp} XP · Assigned to ${esc(w.assignee)===me()?.name?"you":esc(w.assignee)}</div>
+            <div class="muted">${w.lockedDeadline?"🔒":""} Deadline: ${esc(formatDeadline(w))}</div>
+            ${w.recurring?`<div class="muted">🔁 ${esc(w.recurring)} repeat</div>`:""}
+          </div>
+          ${status}
+        </div>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          ${canComplete?`<button class="secondary" onclick="completeWork(${i})">Complete Work</button>`:""}
+          ${canEditDeadline?`<button class="secondary" onclick="editDeadline(${i})">Change Deadline</button>`:""}
+        </div>
+      </div>`;
+    }).join(""):`<div class="empty" style="margin-top:10px">No work yet. Add the first one.</div>`}
+  </main>${bottomNav("work")}`;
+}
+
+function completeWork(i){
+  const w=state.works[i];
+  if(!w||w.done)return;
+  if(w.assignee!==me()?.name)return; // XP only goes to the person the work is assigned to
+
+  const late=workOverdue(w);
+  w.done=true;
+  w.completedAt=new Date().toISOString();
+  w.late=late;
+  w.xp=late?0:xpForSize(w.size);
+
+  const m=me();
+  m.completed=(m.completed||0)+1;
+
+  if(!late){
+    m.xp=(m.xp||0)+w.xp;
+
+    const last=m.lastWorkDate;
+    const today=todayKey();
+    if(last!==today){
+      if(last){
+        const d1=new Date(last+"T00:00:00"),d2=new Date(today+"T00:00:00");
+        const diff=Math.round((d2-d1)/86400000);
+        m.streak=diff===1?(m.streak||0)+1:1;
+      }else{
+        m.streak=1;
+      }
+      m.lastWorkDate=today;
+    }
+
+    state.activity.push({
+      type:"xp",
+      amount:w.xp,
+      time:new Date().toISOString(),
+      text:`Completed ${w.title} on time`
+    });
+    toast(`Work completed on time! +${w.xp} XP`);
+  }else{
+    state.activity.push({
+      type:"xp",
+      amount:0,
+      time:new Date().toISOString(),
+      text:`Completed ${w.title} late · 0 XP`
+    });
+    toast("Deadline missed · 0 XP");
+  }
+
+  // Recurring work gets the next future occurrence, never an already-past deadline.
+  if(w.recurring){
+    const step=w.recurring==="weekly"?7*86400000:86400000;
+    let nextDue=Number(w.dueAt)+step;
+    while(nextDue<=Date.now()) nextDue+=step;
+    state.works.push({
+      ...w,
+      id:crypto.randomUUID?.()||String(Date.now()+Math.random()),
+      done:false,
+      completedAt:null,
+      late:false,
+      xp:xpForSize(w.size),
+      dueAt:nextDue,
+      created:new Date().toISOString()
+    });
+  }
+
+  save();
+  renderWork();
+}
+
+/* ---------- Bills ---------- */
+function renderBills(){
+  document.getElementById("app").innerHTML=`${topbar("Bills","renderHome()")}
+  <main class="content"><button class="link" onclick="renderHome()">← Back to Home</button><h1 class="page-title" style="margin-top:10px">Bills</h1><p class="page-sub">Track household bills without affecting Work XP.</p>
+  <button class="primary" onclick="addBill()">+ Add Bill</button>
+  <div class="section-title">Bills</div>
+  ${state.bills.length?state.bills.map((b,i)=>`<div class="bill-item"><div class="row"><div><b>${esc(b.title)}</b><div class="muted">₹${Number(b.amount).toLocaleString("en-IN")} · Due ${esc(b.due||"Not set")}</div></div><span class="tag ${b.paid?"green":"red"}">${b.paid?"Paid":"Unpaid"}</span></div>${!b.paid?`<button class="secondary" style="margin-top:10px" onclick="payBill(${i})">Mark as Paid</button>`:""}</div>`).join(""):`<div class="empty" style="margin-top:10px">No bills yet. Add your first household bill.</div>`}
+  </main>${bottomNav("bill")}`;
+}
+function addBill(){
+  const existing=document.getElementById("addBillModal");
+  if(existing) existing.remove();
+  document.body.insertAdjacentHTML("beforeend",`
+    <div class="modal-backdrop" id="addBillModal" onclick="if(event.target===this)closeAddBill()">
+      <div class="modal">
+        <div class="modal-head">
+          <div><h2 style="margin:0">💳 Add Bill</h2></div>
+          <button class="close" onclick="closeAddBill()">×</button>
+        </div>
+        <div class="field" style="margin-top:18px">
+          <label>Bill name</label>
+          <input id="billTitle" placeholder="e.g. Electricity">
+        </div>
+        <div class="field">
+          <label>Amount (₹)</label>
+          <input id="billAmount" type="number" min="0" placeholder="e.g. 1500">
+        </div>
+        <div class="field">
+          <label>Due date</label>
+          <input id="billDue" type="date">
+        </div>
+        <button class="primary" onclick="saveNewBill()">Add Bill</button>
+      </div>
+    </div>
+  `);
+}
+function closeAddBill(){document.getElementById("addBillModal")?.remove();}
+function saveNewBill(){
+  const title=document.getElementById("billTitle")?.value.trim();
+  const amount=document.getElementById("billAmount")?.value;
+  const due=document.getElementById("billDue")?.value;
+  if(!title){toast("Please enter a bill name");return;}
+  if(amount===""||amount===undefined||Number(amount)<0){toast("Please enter a valid amount");return;}
+  state.bills.unshift({title,amount:Number(amount),due:due||"",paid:false,createdAt:new Date().toISOString()});
+  save();
+  closeAddBill();
+  toast("Bill added");
+  renderBills();
+}
+function payBill(i){if(!state.bills[i])return;state.bills[i].paid=true;save();toast("Bill marked as paid");renderBills();}
+
+/* ---------- Progress ---------- */
+function renderProgress(){
+  const m=me(),xp=m.xp||0,level=Math.floor(xp/100)+1,inside=xp%100,pct=inside,weekly=weekXp();
+  document.getElementById("app").innerHTML=`${topbar("My Progress","renderHome()")}
+  <main class="content"><button class="link" onclick="renderHome()">← Back to Home</button><h1 class="page-title" style="margin-top:10px">My Progress</h1><p class="page-sub">Your personal progress inside ${esc(state.household.groupName)}.</p>
+  <div class="card"><div class="row"><div><div class="muted">CURRENT LEVEL</div><h2 style="margin:4px 0">⭐ Level ${level}</h2></div><b>${inside}/100 XP</b></div><div class="bar"><span style="width:${pct}%"></span></div><div class="muted" style="margin-top:8px">${100-inside} XP to Level ${level+1}</div></div>
+  <div class="stats" style="margin-top:13px"><div class="stat"><div class="stat-icon">⭐</div><small>Total XP</small><strong>${xp}</strong></div><div class="stat"><div class="stat-icon">📅</div><small>This Week</small><strong>${weekly}</strong></div><div class="stat"><div class="stat-icon">🔥</div><small>Streak</small><strong>${m.streak||0}</strong></div><div class="stat"><div class="stat-icon">🎯</div><small>Completed</small><strong>${m.completed||0}</strong></div></div>
+  <div class="section-title">Milestones</div>
+  <div class="tool-row">
+    <div class="tool"><div class="big">🌟</div><b>First Work</b><span>${(m.completed||0)>=1?"Unlocked":"Complete your first work"}</span></div>
+    <div class="tool"><div class="big">💯</div><b>100 XP</b><span>${xp>=100?"Unlocked":"Earn "+(100-xp)+" more XP"}</span></div>
+    <div class="tool"><div class="big">🔥</div><b>7-Day Streak</b><span>${(m.streak||0)>=7?"Unlocked":"Keep working daily"}</span></div>
+    <div class="tool"><div class="big">👑</div><b>500 XP</b><span>${xp>=500?"Unlocked":"Earn "+(500-xp)+" more XP"}</span></div>
+  </div>
+  <div class="card"><div class="cardhead"><h3>🏆 Group Standing</h3><button class="link" onclick="renderMyGroup()">View group</button></div><div class="row"><span>Your member rank</span><b>#${memberRank()}</b></div><div class="row" style="margin-top:9px"><span>Group rank</span><b>#${groupRank().rank} / ${groupRank().total}</b></div></div>
+  </main>${bottomNav("progress")}`;
+}
+/* ---------- History: real XP/work events, newest first ---------- */
+function renderHistory(){
+  const events=[...state.activity].filter(a=>a.type==="xp").sort((a,b)=>new Date(b.time)-new Date(a.time));
+  document.getElementById("app").innerHTML=`${topbar("History","renderHome()")}
+  <main class="content"><button class="link" onclick="renderHome()">← Back to Home</button>
+  <h1 class="page-title" style="margin-top:10px">📜 History</h1>
+  <p class="page-sub">A record of every completed, late, or missed Work event.</p>
+  ${events.length?`<div class="card">${events.map(e=>{
+    const positive=Number(e.amount)>0;
+    const d=new Date(e.time);
+    const dateStr=d.toLocaleDateString([], {day:"2-digit",month:"short",year:"numeric"});
+    const timeStr=d.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});
+    return `<div class="history-item">
+      <div class="history-body">
+        <b>${esc(e.text)}</b>
+        <span class="muted">${dateStr} · ${timeStr}</span>
+      </div>
+      <b class="${positive?"xp-pos":"xp-zero"}">${positive?"+":""}${e.amount} XP</b>
+    </div>`;
+  }).join("")}</div>`:`<div class="empty" style="margin-top:10px">No history yet. Complete some Work to see events here.</div>`}
+  </main>`;
+}
+/* ---------- Global Leaderboard: real groups ranked by total XP, no fake households ---------- */
+function renderGlobalLeaderboard(){
+  // Only real households known to this device are shown — never invented ones.
+  const groups=[{name:state.household.groupName,xp:groupTotal(),you:true}]
+    .sort((a,b)=>b.xp-a.xp);
+  document.getElementById("app").innerHTML=`${topbar("Leaderboard","renderMyGroup()")}
+  <main class="content"><button class="link" onclick="renderMyGroup()">← Back to My Group</button>
+  <h1 class="page-title" style="margin-top:10px">🌍 Global Leaderboard</h1>
+  <p class="page-sub">Real households ranked by total XP.</p>
+  <div class="card">${groups.map((g,i)=>`<div class="member ${g.you?"you":""}"><b>${i+1}</b><div style="display:flex;align-items:center;gap:8px"><i class="avatar">${g.you?"🏠":"👥"}</i><span>${esc(g.name)}${g.you?" (Your Group)":""}</span></div><b>${g.xp} XP</b></div>`).join("")}</div>
+  <div class="lock-note">🌐 Your household is the only one on this device right now. Once Household Hub has a shared backend, every real household that opts in will appear here ranked by total XP — no invented data.</div>
+  </main>`;
+}
+
+/* ---------- My Group: the user's real household only, no switching ---------- */
+function renderMyGroup(){
+  const members=[...(state.household.members||[])].sort((a,b)=>(b.xp||0)-(a.xp||0));
+  document.getElementById("app").innerHTML=`${topbar("My Group","renderHome()")}
+  <main class="content"><button class="link" onclick="renderHome()">← Back to Home</button>
+  <h1 class="page-title" style="margin-top:10px">🏠 My Group</h1><p class="page-sub">Your household group and its members.</p>
+  <div class="card"><div class="row"><div><h1 class="page-title" style="font-size:21px">${esc(state.household.groupName)}</h1><div class="muted">Group code: ${esc(state.household.groupCode)}</div></div><span class="tag">Your Group</span></div>
+  <div class="stats" style="margin-top:14px;grid-template-columns:repeat(3,1fr)"><div class="stat"><div class="stat-icon">⭐</div><small>Total XP</small><strong>${groupTotal()}</strong></div><div class="stat"><div class="stat-icon">👥</div><small>Members</small><strong>${members.length}</strong></div><div class="stat"><div class="stat-icon">🏆</div><small>Group Rank</small><strong>#1</strong></div></div></div>
+  <div class="section-title">Members</div><div class="card">${members.map((m,i)=>`<div class="member ${m.you?"you":""}"><b>${i+1}</b><div style="display:flex;align-items:center;gap:8px"><i class="avatar"${m.you&&m.avatar?` style="background-image:url('${m.avatar}');background-size:cover;background-position:center"`:""}>${m.you&&m.avatar?"":(m.you?"🙂":"👤")}</i><span>${esc(m.name)}${m.you?" (You)":""}</span></div><b>${m.xp||0} XP</b><span>🔥 ${m.streak||0}d</span></div>`).join("")}</div>
+  <button class="tool" style="width:100%;margin-top:13px;text-align:left" onclick="renderGlobalLeaderboard()">
+    <div class="big">🌍</div>
+    <b>Global Leaderboard</b>
+    <span>See how real households rank worldwide by total XP</span>
+  </button>
+  </main>${bottomNav("group")}`;
+}
+
+/* ---------- profile/reset ---------- */
+function renderProfile(){
+  const m=me();
+  document.getElementById("app").innerHTML=`${topbar("Profile","renderHome()")}
+  <main class="content"><button class="link" onclick="renderHome()">← Back to Home</button><h1 class="page-title" style="margin-top:10px">My Profile</h1><p class="page-sub">Your household identity and local prototype settings.</p>
+  <div class="card" style="text-align:center">
+    <div class="profile-avatar-wrap">
+      <div class="profile-avatar">${m.avatar?`<img src="${m.avatar}" alt="Profile photo">`:"🙂"}</div>
+      <label class="profile-avatar-edit" for="avatarInput" title="Change photo">📷</label>
+    </div>
+    <input type="file" id="avatarInput" accept="image/*" style="position:absolute;width:1px;height:1px;overflow:hidden;opacity:0" onchange="handleAvatarUpload(event)">
+    <div class="muted" style="margin-top:2px">Tap the camera to change your photo</div>
+    ${m.avatar?`<button class="link" style="margin-top:8px" onclick="removeAvatar()">Remove photo</button>`:""}
+  </div>
+  <div class="card"><div class="row"><div><div class="muted">NAME</div><h2 style="margin:4px 0">${esc(m.name)}</h2></div><span class="tag">${esc(state.onboarding.role)}</span></div><div class="row" style="margin-top:15px"><span>Group</span><b>${esc(state.household.groupName)}</b></div><div class="row" style="margin-top:9px"><span>Group code</span><b>${esc(state.household.groupCode)}</b></div></div>
+  <div class="card"><div class="row"><div><h3 style="margin:0 0 4px">📲 Install Household Hub</h3><p class="muted" style="margin:0">Add it to your home screen for a full-screen app experience and offline access.</p></div></div><button class="primary" style="margin-top:12px" onclick="installApp()">${isStandalone()?"Already Installed":"Install App"}</button></div>
+  <div class="card"><h3 style="margin-top:0">Prototype controls</h3><p class="muted">Reset removes this local household and returns the app to the empty first-open screen.</p><button class="secondary" onclick="if(confirm('Reset the prototype and remove all local data?'))resetApp()">Reset & Start Again</button></div>
+  </main>${bottomNav("profile")}`;
+}
+
+/* ---------- PWA: install prompt + service worker ---------- */
+let deferredInstallPrompt=null;
+function isStandalone(){
+  return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone===true;
+}
+window.addEventListener("beforeinstallprompt",(e)=>{
+  e.preventDefault();
+  deferredInstallPrompt=e;
+});
+window.addEventListener("appinstalled",()=>{
+  deferredInstallPrompt=null;
+  toast("Household Hub installed!");
+});
+function installApp(){
+  if(deferredInstallPrompt){
+    deferredInstallPrompt.prompt();
+    deferredInstallPrompt.userChoice.finally(()=>{deferredInstallPrompt=null;});
+  }else if(isStandalone()){
+    toast("Already installed on this device");
+  }else{
+    toast("Use your browser menu \u2192 \"Add to Home Screen\" or \"Install App\"");
+  }
+}
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>{
+    navigator.serviceWorker.register("sw.js").catch(()=>{/* offline-support unavailable, app still works online */});
+  });
+}
+
+load();
+applyTheme();
+if(state.household) renderHome(); else renderOnboarding();
+</script>
+</body>
+</html>
