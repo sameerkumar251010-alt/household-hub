@@ -975,21 +975,5 @@ load();
 applyTheme();
 if(state.household) renderHome(); else renderOnboarding();
 </script>
-  <button id="fbTestBtn" style="position:fixed;bottom:80px;right:16px;z-index:9999;padding:10px 14px;background:#6738d8;color:#fff;border:none;border-radius:8px;">Test Firebase</button>
-<script type="module">
-  import { collection, addDoc } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
-  document.getElementById('fbTestBtn').addEventListener('click', async () => {
-    try {
-      const db = window.householdHubFirebase.db;
-      const docRef = await addDoc(collection(db, "test"), {
-        message: "Hello from Household Hub!",
-        time: new Date().toISOString()
-      });
-      alert("Success! Document written with ID: " + docRef.id);
-    } catch (e) {
-      alert("Error: " + e.message);
-    }
-  });
-</script>
 </body>
 </html>
