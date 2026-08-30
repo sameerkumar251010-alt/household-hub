@@ -477,6 +477,7 @@ async function renderVerification(){
       state.currentScreen="home";
       saveLocalOnly();
       await window.householdHubFirebase.setDoc(firestoreRef(code),backendPayload());
+      startHouseholdListener(code);
     }else{
       if(!existing){
         toast("Group not found. Check the Group Code.");
@@ -491,6 +492,7 @@ async function renderVerification(){
       const merged={...existing,members,memberIds:members.map(m=>m.uid||m.id)};
       await window.householdHubFirebase.setDoc(firestoreRef(code),merged);
       applyRemoteHousehold(merged,user.uid);
+      startHouseholdListener(code);
     }
     state.onboarding.groupName=state.household.groupName;
     state.onboarding.groupCode=state.household.groupCode;
