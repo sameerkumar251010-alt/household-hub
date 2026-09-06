@@ -1089,7 +1089,7 @@ if("serviceWorker" in navigator){
 
 load();
 applyTheme();
-if(state.household) renderHome();startHouseholdListener(state.household.groupCode); else renderOnboarding();
+if(state.household) {renderHome();startHouseholdListener(state.household.groupCode);} else renderOnboarding();
 </script>
 </body>
 </html>
