@@ -96,7 +96,7 @@ button{cursor:pointer}
 <!-- Household Hub: Firebase connection - Step 1 -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
- import { getFirestore, doc, getDoc, setDoc,onSnapshot} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 const firebaseConfig = {
  apiKey: "AIzaSyD1JRzTQciZ2kLNWu65xNltDRYEeuFMqd0",
@@ -109,7 +109,7 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 const firestore = getFirestore(firebaseApp);
 const auth = getAuth(firebaseApp);
-window.householdHubFirebase = {app: firebaseApp, db: firestore, auth, doc, getDoc, setDoc,onSnapshot};
+window.householdHubFirebase = {app: firebaseApp, db: firestore, auth, doc, getDoc, setDoc};
 window.householdHubAuthReady = signInAnonymously(auth).then(()=>auth.currentUser);
 window.householdHubAuthReady.catch(err=>console.error("Firebase anonymous sign-in failed:",err));
 </script>
@@ -207,19 +207,6 @@ function applyRemoteHousehold(data,uid){
   state.bills=Array.isArray(data.bills)?data.bills:[];
   state.activity=Array.isArray(data.activity)?data.activity:[];
   saveLocalOnly();
-}
-  let householdUnsub=null;
-function startHouseholdListener(groupCode){
-  if(householdUnsub){ householdUnsub(); householdUnsub=null; }
-  const fb=window.householdHubFirebase;
-  if(!fb?.onSnapshot) return;
-  householdUnsub=fb.onSnapshot(firestoreRef(groupCode),(snap)=>{
-    if(!snap.exists()) return;
-    const data=snap.data();
-    const uid=fb.auth?.currentUser?.uid;
-    applyRemoteHousehold(data,uid);
-    if(state.currentScreen==="home") renderHome();
-  });
 }
 function saveLocalOnly(){
   try{ localStorage.setItem(KEY,JSON.stringify(state)); }catch(e){}
@@ -477,7 +464,6 @@ async function renderVerification(){
       state.currentScreen="home";
       saveLocalOnly();
       await window.householdHubFirebase.setDoc(firestoreRef(code),backendPayload());
-      startHouseholdListener(code);
     }else{
       if(!existing){
         toast("Group not found. Check the Group Code.");
@@ -492,7 +478,6 @@ async function renderVerification(){
       const merged={...existing,members,memberIds:members.map(m=>m.uid||m.id)};
       await window.householdHubFirebase.setDoc(firestoreRef(code),merged);
       applyRemoteHousehold(merged,user.uid);
-      startHouseholdListener(code);
     }
     state.onboarding.groupName=state.household.groupName;
     state.onboarding.groupCode=state.household.groupCode;
@@ -1089,7 +1074,7 @@ if("serviceWorker" in navigator){
 
 load();
 applyTheme();
-if(state.household) {renderHome();startHouseholdListener(state.household.groupCode);} else renderOnboarding();
+if(state.household) renderHome(); else renderOnboarding();
 </script>
 </body>
 </html>
