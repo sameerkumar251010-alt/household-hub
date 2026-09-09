@@ -96,7 +96,7 @@ button{cursor:pointer}
 <!-- Household Hub: Firebase connection - Step 1 -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 const firebaseConfig = {
  apiKey: "AIzaSyD1JRzTQciZ2kLNWu65xNltDRYEeuFMqd0",
