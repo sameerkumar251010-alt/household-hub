@@ -212,7 +212,7 @@ let householdUnsub=null;
 function startHouseholdListener(groupCode){
   if(householdUnsub){ householdUnsub(); householdUnsub=null; }
   const fb=window.householdHubFirebase;
-  if(!fb?.onSnapshot) return;
+  if(!fb?.onSnapshot){ setTimeout(()=>startHouseholdListener(groupCode),300); return; }
   householdUnsub=fb.onSnapshot(firestoreRef(groupCode),(snap)=>{
     if(!snap.exists()) return;
     const data=snap.data();
